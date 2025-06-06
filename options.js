@@ -21,8 +21,8 @@
  *   Source.
  */
 
-import { version } from "./lib/version.js";
 import { Deno } from "./lib/deno-polyfill.js";
+import { version } from "./lib/version.js";
 
 const USAGE_TEXT = `single-file [url] [output]
 
@@ -157,7 +157,8 @@ const OPTIONS_INFO = {
 	"resolve-links": { description: "Resolve link URLs to absolute URLs", type: "boolean", defaultValue: true },
 	"settings-file": { description: "Path to a JSON file containing the settings exported from the web extension", type: "string" },
 	"settings-file-profile": { description: "Name of the profile to use when using --settings-file", type: "string", defaultValue: "default" },
-	"group-duplicate-stylesheets": { description: "Group duplicate inline stylesheets into a single stylesheet in order to reduce the size of the page", type: "boolean", defaultValue: false }
+	"group-duplicate-stylesheets": { description: "Group duplicate inline stylesheets into a single stylesheet in order to reduce the size of the page", type: "boolean", defaultValue: false },
+	"crawl-no-parent-whitelist": { description: "Enable crawling through parent for a specific url", type: "string", defaultValue: "null" }
 };
 
 const { args, exit } = Deno;

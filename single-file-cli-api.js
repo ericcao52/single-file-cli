@@ -24,8 +24,8 @@
 /* global URL, Blob, FileReader */
 
 import * as backend from "./lib/cdp-client.js";
-import { getZipScriptSource } from "./lib/single-file-script.js";
 import { Deno, path } from "./lib/deno-polyfill.js";
+import { getZipScriptSource } from "./lib/single-file-script.js";
 
 const VALID_URL_TEST = /^(https?|file):\/\//;
 
@@ -179,7 +179,7 @@ async function runNextTask() {
 					!tasks.find(otherTask => otherTask.url == task.url) &&
 					!newTasks.find(otherTask => otherTask != task && otherTask.url == task.url) &&
 					(!options.crawlInnerLinksOnly || task.isInnerLink) &&
-					(!options.crawlNoParent || (task.isChild || !task.isInnerLink)));
+					(!options.crawlNoParent || (task.isChild || task.url.indexOf(options.crawlNoParentWhitelist) === 0 || !task.isInnerLink)));
 				tasks.splice(tasks.length, 0, ...newTasks);
 			}
 		}
