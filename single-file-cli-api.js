@@ -23,8 +23,9 @@
 
 /* global URL, Blob, FileReader */
 
+import path from 'path';
 import * as backend from "./lib/cdp-client.js";
-import { Deno, path } from "./lib/deno-polyfill.js";
+import { Deno, } from "./lib/deno-polyfill.js";
 import { getZipScriptSource } from "./lib/single-file-script.js";
 
 const VALID_URL_TEST = /^(https?|file):\/\//;
@@ -127,7 +128,8 @@ async function finish(options) {
 	if (options.crawlReplaceURLs && !options.compressContent) {
 		for (const task of tasks) {
 			try {
-				let pageContent = await readTextFile(task.filename);
+			    const inputPath = path.resolve(options.outputDirectory || process.cwd(), task.filename);
+				let pageContent = await readTextFile(inputPath);
 				tasks.forEach(otherTask => {
 					if (otherTask.filename) {
 						pageContent = pageContent.replace(new RegExp(escapeRegExp("\"" + otherTask.originalUrl + "\""), "gi"), "\"" + otherTask.filename + "\"");
@@ -137,9 +139,9 @@ async function finish(options) {
 						pageContent = pageContent.replace(new RegExp(escapeRegExp("=" + otherTask.originalUrl + ">"), "gi"), "=" + filename + ">");
 					}
 				});
-				await writeTextFile(task.filename, pageContent);
-			} catch {
-				// ignored
+				await writeTextFile(`${options.outputDirectory}/${task.filename}`, pageContent);
+			} catch (e) {
+			    console.log(e.message)
 			}
 		}
 	}
