@@ -139,6 +139,12 @@ async function finish(options) {
 						pageContent = pageContent.replace(new RegExp(escapeRegExp("=" + otherTask.originalUrl + ">"), "gi"), "=" + filename + ">");
 					}
 				});
+
+				if (options.appendScript) {
+					let scriptContent = await readTextFile(`${options.appendScript}`);
+					pageContent += `<script type='text/javascript'>${scriptContent}</script>`
+				}
+
 				await writeTextFile(`${options.outputDirectory}/${task.filename}`, pageContent);
 			} catch (e) {
 			    console.log(e.message)
