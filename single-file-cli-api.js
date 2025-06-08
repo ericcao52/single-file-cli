@@ -177,17 +177,28 @@ async function runNextTask() {
 		task.promise = capturePage(taskOptions);
 		const pageData = await task.promise;
 		task.status = STATE_PROCESSED;
+
+		let linksFilterScript = null
+		if (options.linksFilterScript) {
+            const fullPath = path.resolve(options.linksFilterScript);
+            linksFilterScript = (await import(fullPath))?.default;
+            if (typeof linksFilterScript !== 'function') {
+                throw new Error('Custom filter must export a function');
+            }
+        }
+
 		if (pageData) {
 			task.filename = pageData.filename;
 			if (options.crawlLinks && testMaxDepth(task)) {
-				const urls = pageData.links;
+				const urls = linksFilterScript  ? linksFilterScript(pageData.links) : pageData.links;
 				let newTasks = await Promise.all(urls.map(url => createTask(url, options, task, task.rootTaskURL || task.url)));
 				newTasks = newTasks.filter(task => task &&
 					testMaxDepth(task) &&
 					!tasks.find(otherTask => otherTask.url == task.url) &&
 					!newTasks.find(otherTask => otherTask != task && otherTask.url == task.url) &&
 					(!options.crawlInnerLinksOnly || task.isInnerLink) &&
-					(!options.crawlNoParent || (task.isChild || task.url.indexOf(options.crawlNoParentWhitelist) === 0 || !task.isInnerLink)));
+					(!options.crawlNoParent || (task.isChild || !task.isInnerLink))
+				);
 				tasks.splice(tasks.length, 0, ...newTasks);
 			}
 		}

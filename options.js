@@ -158,8 +158,8 @@ const OPTIONS_INFO = {
 	"settings-file": { description: "Path to a JSON file containing the settings exported from the web extension", type: "string" },
 	"settings-file-profile": { description: "Name of the profile to use when using --settings-file", type: "string", defaultValue: "default" },
 	"group-duplicate-stylesheets": { description: "Group duplicate inline stylesheets into a single stylesheet in order to reduce the size of the page", type: "boolean", defaultValue: false },
-	"crawl-no-parent-whitelist": { description: "Enable crawling through parent for a specific url", type: "string", defaultValue: "null" },
-	"append-script": { description: "Append a script at the end of each files", type: "string" }
+	"append-script": { description: "Append a script at the end of each files", type: "string" },
+	"links-filter-script": { description: "Filter crawled links script", type: "string" }
 };
 
 const { args, exit } = Deno;
